@@ -23,7 +23,7 @@ template <typename T>
 class LinkedList : public Indexed < T >
 {
 
-//*****************************************************************************
+// *****************************************************************************
 private:
 
 	ListNode<T> *_front = nullptr;              // Head of list pointer
@@ -34,7 +34,7 @@ private:
 	ListNode<T> *_last_accessed_node = nullptr; // Tracking last accessed node for copies
 
 
-//*****************************************************************************
+// *****************************************************************************
 protected:
 	/*
 	ListNode<T> *getFront()
@@ -131,7 +131,7 @@ protected:
 	}
 
 
-//*****************************************************************************
+// *****************************************************************************
 public:
 
   // Basic list constructor
@@ -143,7 +143,7 @@ public:
 		_end = _front;
 	}
 
-//***************************************************************************//
+// **************************************************************************
 // START Microassigment zone - all code you need to change is here
 
 	// Copy constructor
@@ -181,7 +181,7 @@ public:
 		cout << " [x] Initializer List Constructor executed. " << endl;
 		// Add a copy of every element in values to ourselves
                 for (auto & x : values) {   // x is an lvalue reference to the object T in values
-                    this->addElement(x);    // append
+                    this->addElement(x);    // append, addElement makes a copy of x regardless
                 }
 	}
 
@@ -191,11 +191,16 @@ public:
 	virtual ~LinkedList()
 	{
 		cout << "  [x] LinkedList Destructor executed. " << endl;
-		// Delete every node in our internal linked list
-                for (int i = 0; i < this->getSize(); ++i) {
-                    this->removeElementAt(i);
-                }
-                
+		ListNode<T> *current = _front, *next = nullptr;
+		while (current != nullptr) {
+		    next = current->getNext();          // get the next in line
+		    delete current;                     // delete the current
+		    current = next;                     // update current to point to next
+		}
+		// Set pointers to nullptr.
+		_front = nullptr;
+		_end = nullptr;
+		_last_accessed_node = nullptr;
 	}
 
 	// Copy assignment operator

@@ -154,4 +154,5 @@ int main(int argc, char *argv[])
 		cout << "         /\\_/\\\n    ____/ o o \\\n  /~____  =ø= /\n (______)__m_m)\n" << endl;
 		cout << endl << " You should probably run 'make test' to test your program. " << endl;
 	}
+	return 0;
 }
