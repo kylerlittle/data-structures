@@ -150,65 +150,89 @@ public:
 	//  MA TODO: Implement!
 	LinkedList(const LinkedList<T> &other)
 	{
-		cout << " [x] Copy Constructor executed. " << endl;
 		// Copy every element in other to ourselves
+                for (int i = 0; i < other.getSize(); ++i) {
+                    this->addElement(other.getElementAt(i));
+                }
+            cout << " [x] Copy Constructor executed. " << endl;
 	}
 
 
 	// Move constructor
 	//  MA TODO: Implement!
-	LinkedList(LinkedList<T> &&other)
-	{
+	LinkedList(LinkedList<T> &&other) : _front{other._front}, _end{other._end},
+                _last_accessed_node{other._last_accessed_node},
+                _last_accessed_index{other._last_accessed_index},
+                _size{other._size}
+	{   // Initializer list to set this LinkedList's attributes
 		cout << " [x] Move Constructor executed. " << endl;
-		// Copy the pointers within other to ourselves
-		//  Also copy their class varibles (_last_accessed_index, etc)
-
+                
 		// Reset pointers in other to nullptr
+                other._front = nullptr;
+                other._end = nullptr;
+                other._last_accessed_node = nullptr;
 	}
 
 
-	// Iinitializer list constructor
+	// Initializer list constructor
 	//  MA TODO: Implement!
 	LinkedList(initializer_list<T> values)
 	{
 		cout << " [x] Initializer List Constructor executed. " << endl;
 		// Add a copy of every element in values to ourselves
+                for (auto & x : values) {   // x is an lvalue reference to the object T in values
+                    this->addElement(x);    // append
+                }
 	}
 
 
-	// Destructor: Always remeber to clean up pointers in destructor!
+	// Destructor: Always remember to clean up pointers in destructor!
 	//  MA TODO: Implement!
 	virtual ~LinkedList()
 	{
 		cout << "  [x] LinkedList Destructor executed. " << endl;
 		// Delete every node in our internal linked list
+                for (int i = 0; i < this->getSize(); ++i) {
+                    this->removeElementAt(i);
+                }
+                
 	}
 
 	// Copy assignment operator
 	//  MA TODO: Implement!
 	virtual LinkedList<T> &operator=(const LinkedList<T> &other)
 	{
-		// Note: might want to make sure we don't copy ourselves!
 		cout << " [x] Copy *assignment* operator called. " << endl;
-
-		// Delete our elements
-
-		// Add in other's elements
+                
+                if (&other != this) {   // check for self assignment
+                    // Utilize the copy constructor I already wrote (deep copy).
+                    LinkedList<T> copy = other;
+                    // Swap the copy for this LinkedList.
+                        // Any swap requires three copies, but std::swap actually uses
+                        // the move constructor & move assignment operators to make
+                        // the swap extremely efficient.
+                    std::swap(*this, copy);
+                }
+                
+                // copy is deleted correctly once this function returns
 
 		return *this;
 	}
-
 
 	// Move assignment operator
 	//  MA TODO: Implement!
 	virtual LinkedList<T> &operator=(LinkedList<T> &&other)
 	{
 		cout << " [x] Move *assignment* operator called. " << endl;
-		// Delete our own elements
-
-		// Grab other data for ourselves
-
-		// Reset their pointers to nullptr
+		// Swapping is the best choice because:
+                    // 1. Once the swaps have occurred, 'other' (previously this LinkedList) is destroyed correctly,
+                            // using the destructor I already wrote.
+                    // 2. Very efficient. No copies and a lot of time saved.
+                std::swap(this->_front, other._front);
+                std::swap(this->_end, other._end);
+                std::swap(this->_last_accessed_node, other._last_accessed_node);
+                std::swap(this->_last_accessed_index, other._last_accessed_index);
+                std::swap(this->_size, other._size);
 
 		return *this;
 	}
