@@ -22,10 +22,10 @@ using namespace std;
  *  Interface to run all tests if --test is passed on command line
  */
 void runTests() {
-	cout << " [x] Running tests. " << endl;
-	TestData *testing = new TestData();			// Create object with testing data and interfaces
+    cout << " [x] Running tests. " << endl;
+    TestData *testing = new TestData();			// Create object with testing data and interfaces
 
-  BST<int> *bst_test = new BST<int>;
+    BST<int> *bst_test = new BST<int>;
 
 	/* Should make a tree like this:
               10
@@ -35,20 +35,20 @@ void runTests() {
                           18
 
    */
-	int testval = testing->get_next_minitest();
-	while( testval >= 0 ){
-		bst_test->add( testval );
-		testval = testing->get_next_minitest();
-	}
-	cout << " [x] Should print out in pre order: 10 5 1 7 14 17 19 18 " << endl;
-  cout << " [x] Resulting print out test:      ";
-	bst_test->printPreOrder();
-  cout << endl;
+    int testval = testing->get_next_minitest();
+    while( testval >= 0 ){
+        bst_test->add( testval );
+        testval = testing->get_next_minitest();
+    }
+    cout << " [x] Should print out in pre order: 10 5 1 7 14 17 19 18 " << endl;
+    cout << " [x] Resulting print out test:      ";
+    bst_test->printPreOrder();
+    cout << endl;
 
-	cout << " [x] Should print a tree height of  : 5" << endl;
-  cout << " [x] Currently calculating height of: ";
-  cout << bst_test->height();
-  cout << endl;
+    cout << " [x] Should print a tree height of  : 5" << endl;
+    cout << " [x] Currently calculating height of: ";
+    cout << bst_test->height();
+    cout << endl;
 }
 
 
