@@ -27,13 +27,9 @@ class Node {
         Node<T> * _left;
         Node<T> * _right;
     public:
-        Node(T val) : _value{val} {
-            _left = nullptr;
-            _right = nullptr;
-        }
+        Node(T val) : _value{val}, _left{nullptr}, _right{nullptr} {}
         
-        // Consider where and when I should pass T by reference
-        T getValue() const {
+        T getValue() const {        // in this instance, it's fine that I'm returning a copy... but might not be for future cases
             return _value;
         }
         
@@ -56,7 +52,7 @@ class BST {
     
     protected:      
         void destroyTree(Node<T> *& pTree) {
-            if (pTree != nullptr) {
+            if (pTree != nullptr) {         // Post Order Traversal
                 destroyTree(pTree->getLeft());
                 destroyTree(pTree->getRight());
                 delete pTree;
@@ -121,9 +117,6 @@ class BST {
 
     void printPreOrder() {
         this->printPreOrder(root);
-    }
-
-    int nodesCount() {
     }
 
     int height() {
