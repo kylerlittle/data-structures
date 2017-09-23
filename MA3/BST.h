@@ -137,7 +137,7 @@ class BST {
 	    queue<Node<T> *> treeValsbyLevel; 
 	    treeValsbyLevel.push(root);    // enqueue root
 	    while (!treeValsbyLevel.empty()) {    // while more nodes to process
-	      // Breadth-First Search type algorithm-- add children to queue to process
+	      // Breadth-First Algorithm-- add "level" to queue to process
 	      Node<T> * val = treeValsbyLevel.front();   // snag value to process
 	      ret->push_back(val->value);       // push copy of actual T value to vector
 	      treeValsbyLevel.pop();      // pop value 
@@ -237,24 +237,28 @@ class BST {
     }
 
     /* Move constructor */
-    /* MA TODO: Implement */
-    BST ( BST && other ) : root( NULL ) {
+    /* MA TODO: COMPLETED */
+    BST ( BST && other ) : root( other.root ) {
         cout << " [d] Move constructor called " << endl;
-        cout << " TODO: Implement move constructor. " << endl;
+        other.root = nullptr;       // Necessary to ensure proper destruction of other
     }
 
     /* Copy assignment operator */
-    /* MA TODO: Implement */
+    /* MA TODO: COMPLETED */
     BST& operator=(BST & other) {
         cout << " [d] Copy assignment operator called. " << endl;
-        cout << " TODO: Implement copy assignment operator. " << endl;
+        BST<T> copy = other;        // invokes copy constructor
+        swap(*this, other);         // put copy in *this   
+        return *this;
     }
 
     /* Move assignment operator */
-    /* MA TODO: Implement */
+    /* MA TODO: COMPLETED */
     BST& operator=(BST && other) {
         cout << " [d] Move assignment operator called. " << endl;
-        cout << " TODO: Implement move assignment operator. " << endl;
+        swap(root, other.root);
+        other.root = nullptr;   // Necessary to ensure proper destruction of other.
+        return *this;
     }
 
     /* Public API */
