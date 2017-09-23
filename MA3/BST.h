@@ -117,30 +117,34 @@ class BST {
     }
 
     /* Print tree out in level order */
-    /* MA TODO: Implement */
+    /* MA TODO: COMPLETED */
     void printLevelOrderHelper(Node<T> *root) {
         if (!root) return;
-        /*
-        MA TODO:
-        */
-        cout << endl;
-        cout << "printLevelOrderHelper UNIMPLEMENTED AT THIS TIME -- REPLACE!" << endl;
-        cout << " ** Required to use the STL queue class (that's a huge hint)!" << endl;
-        cout << " ** Doing this with a loop will be easier than recursion." << endl;
+        vector<T> & levels = this->returnLevelOrderHelper(root);
+	    for (auto & val : levels) {
+	      cout << val << " ";
+	    }
+	    vector<T> * deleteThis = &levels;
+	    delete deleteThis;  // free memory on heap
     }
 
     /* Generate vector of tree values to return */
-    /* MA TODO: Implement */
+    /* MA TODO: COMPLETED */
     vector<T> & returnLevelOrderHelper(Node<T> *root) {
         vector<T> * ret = new vector<T>{};
         if (!root) return( *ret );
-        /*
-        MA TODO:
-        */
-        cout << endl;
-        cout << " returnLevelOrderHelper UNIMPLEMENTED AT THIS TIME -- REPLACE!" << endl;
-        cout << " ** Required to use the STL queue class (that's a huge hint)!" << endl;
-        cout << " ** Doing this with a loop will be easier than recursion." << endl;
+ 
+	    queue<Node<T> *> treeValsbyLevel; 
+	    treeValsbyLevel.push(root);    // enqueue root
+	    while (!treeValsbyLevel.empty()) {    // while more nodes to process
+	      // Breadth-First Search type algorithm-- add children to queue to process
+	      Node<T> * val = treeValsbyLevel.front();   // snag value to process
+	      ret->push_back(val->value);       // push copy of actual T value to vector
+	      treeValsbyLevel.pop();      // pop value 
+	      if (val->left) treeValsbyLevel.push(val->left);
+	      if (val->right) treeValsbyLevel.push(val->right);
+	    }
+	
         return( *ret );
     }
 
@@ -226,10 +230,10 @@ class BST {
     }
 
     /* Copy constructor */
-    /* MA TODO: Implement */
+    /* MA TODO: COMPLETED */
     BST( const BST &other ) : root( NULL ) {
         cout << " [d] Copy constructor called. " << endl;
-        cout << " TODO: Implement copy constructor. " << endl;
+        this->root = cloneTree(other.root);
     }
 
     /* Move constructor */
