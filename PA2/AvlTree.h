@@ -8,6 +8,8 @@
 #include <algorithm> // For max() function
 using namespace std;
 
+#define ALLOWED_IMBALANCE 1
+
 // AvlTree class
 //
 // CONSTRUCTION: with ITEM_NOT_FOUND object used to signal failed finds
@@ -182,7 +184,7 @@ class AvlTree
      */
     void remove( const Comparable & x )
     {
-        //cout << "[!] Sorry, remove unimplemented; " << x << " still present" << endl;
+      
     }
 
 
@@ -233,7 +235,7 @@ class AvlTree
     void insert( const Comparable & x, AvlNode * & t )
     {
       if (t == nullptr) 
-	t = new AvlNode(x, nullptr, nullptr, 0);
+	t = new AvlNode(x, nullptr, nullptr);
       else if (x < t->element)
 	insert(x, t->left);
       else if (x > t->element)
@@ -246,9 +248,26 @@ class AvlTree
      * Internal method to balance a tree t
      * If height magnitude of difference between left and right subtrees of t is greater than 1,
      * then a rotation is necessary.   
+     * Note that when checking to see if insertion was *-left or *-right, it's unnecessary to also check
+     * for equality in heights; if there were equality in heights after an insertion, then there would have been
+     * an imbalance already. If there were equality in heights after a deletion, then there would have been an
+     * imbalance already, too. In other words, the height difference MUST BE from one of the children of t, not both
     */
     void balance(AvlNode * & t) {
-      
+      if (height(t->left) - height(t->right) > ALLOWED_IMBALANCE) {   // i.e. left side is heavier (implies left has at least height 2), so left is not null
+	if (height(t->left->left) < height(t->left->right))  // insertion was to right (i.e. left-right) or deleted fro
+	  doubleWithLeftChild(t);
+	else  // left-left insertion
+	  rotateWithLeftChild(t);
+      } else {
+        if (height(t->right) - height(t->left) > ALLOWED_IMBALANCE)  // i.e. right side is heavier (implies right has at least height 2), so right is not null
+	  if (height(t->right->right) < height(t->right->left)) // insertion was to the left (i.e. right-left)
+	    doubleWithRightChild(t);
+	  else
+	    rotateWithRightChild(t);
+      }
+      // in book's code, they update t's height, but it should already be updated... so I'm gonna exclude it
+      // might need to update it strictly for the case of deletion
     }
 
     /**
