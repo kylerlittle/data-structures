@@ -87,7 +87,7 @@ class AvlTree
      */
     bool isEmpty( ) const
     {
-      return root == nullptr ? true : false; 
+      return (root == nullptr) ? true : false; 
     }
 
     /**
@@ -184,7 +184,7 @@ class AvlTree
      */
     void remove( const Comparable & x )
     {
-      
+      remove(x, root);  // call internal method to remove; will automatically check if x is in tree
     }
 
 
@@ -221,8 +221,10 @@ class AvlTree
      */
     int size( AvlNode * & t )
     {
-      if (t == nullptr) return 0;  // null node counts zero
-      else return size(t->left) + size(t->right) + 1;  // +1 accounts for current node
+      if (t == nullptr)
+	return 0;  // null node counts zero
+      else
+	return (size(t->left) + size(t->right) + 1);  // +1 accounts for current node
     }
 
     /**
@@ -235,11 +237,33 @@ class AvlTree
     void insert( const Comparable & x, AvlNode * & t )
     {
       if (t == nullptr) 
-	t = new AvlNode(x, nullptr, nullptr);
+	t = new AvlNode{x, nullptr, nullptr};
       else if (x < t->element)
 	insert(x, t->left);
       else if (x > t->element)
 	insert(x, t->right);
+
+      balance(t);
+    }
+
+    /**
+     * Internal method to remove x from the tree
+     * Done recursively, so as to rebalance on the way back up
+     * It is assumed that x is in the tree
+     */
+    void remove (const Comparable & x, AvlNode * & t) {
+      if (t == nullptr) { return; }   // necessary for case where removing root with no right subtree; also simply returns if x is not found
+      else if (x < t->element) { remove(x, t->left); }
+      else if (x > t->element) { remove(x, t->right); }
+      else if (t->right != nullptr && t->left != nullptr) {
+	// If we make it to this point, x has been found and has two children
+	t->element = findMin(t->right)->element;  // replace data with data of smallest node in right subtree
+	remove(t->element, t->right);  // remove the stolen node since we're guaranteed it has at most one child (right child)
+      } else { // methods for removing x with one or zero children are same 
+	AvlNode * toDelete = t;
+	t = (t->right == nullptr) ? t->left : t->right;  // set t to point at whichever is not nullptr
+	delete toDelete;
+      }
 
       balance(t);
     }
@@ -250,24 +274,25 @@ class AvlTree
      * then a rotation is necessary.   
      * Note that when checking to see if insertion was *-left or *-right, it's unnecessary to also check
      * for equality in heights; if there were equality in heights after an insertion, then there would have been
-     * an imbalance already. If there were equality in heights after a deletion, then there would have been an
-     * imbalance already, too. In other words, the height difference MUST BE from one of the children of t, not both
+     * an imbalance already. If using balance after a deletion, then this actually saves some work by only doing
+     * a single rotation when the heights on the heavier side are equal (or within the allowed imbalance).
     */
     void balance(AvlNode * & t) {
+      if (t == nullptr) { return; }
+      
       if (height(t->left) - height(t->right) > ALLOWED_IMBALANCE) {   // i.e. left side is heavier (implies left has at least height 2), so left is not null
-	if (height(t->left->left) < height(t->left->right))  // insertion was to right (i.e. left-right) or deleted fro
+	if (height(t->left->left) < height(t->left->right))  // left-right case
 	  doubleWithLeftChild(t);
 	else  // left-left insertion
 	  rotateWithLeftChild(t);
       } else {
         if (height(t->right) - height(t->left) > ALLOWED_IMBALANCE)  // i.e. right side is heavier (implies right has at least height 2), so right is not null
-	  if (height(t->right->right) < height(t->right->left)) // insertion was to the left (i.e. right-left)
+	  if (height(t->right->right) < height(t->right->left)) // right-left case
 	    doubleWithRightChild(t);
 	  else
 	    rotateWithRightChild(t);
       }
-      // in book's code, they update t's height, but it should already be updated... so I'm gonna exclude it
-      // might need to update it strictly for the case of deletion
+      t->height = height(t);
     }
 
     /**
@@ -303,8 +328,10 @@ class AvlTree
     bool contains( const Comparable & x, AvlNode *t ) const
     {
       while (t != nullptr) {
-	if (x == t->element) return true;
-	else t = x < t->element ? t->left : t->right;
+	if (x == t->element)
+	  return true;
+	else
+	  t = (x < t->element) ? t->left : t->right;
       }
       return false;    // Lolz
     }
@@ -387,14 +414,16 @@ class AvlTree
      */
     int height( AvlNode *t ) const
     {
-      if (t == nullptr) return -1;
-      else return max(height(t->left) + height(t->right)) + 1;       // take max height of children, add one for the current node
+      if (t == nullptr)
+	return -1;
+      else
+	return (max(height(t->left), height(t->right)) + 1);       // take max height of children, add one for the current node
     }
 
 
     int max( int lhs, int rhs ) const
     {
-        return lhs > rhs ? lhs : rhs;
+      return lhs > rhs ? lhs : rhs;
     }
 
     /**
