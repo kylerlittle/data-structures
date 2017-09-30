@@ -267,6 +267,10 @@ class AvlTree
      */
     bool contains( const Comparable & x, AvlNode *t ) const
     {
+      while (t != nullptr) {
+	if (x == t->element) return true;
+	else t = x < t->element ? t->left : t->right;
+      }
       return false;    // Lolz
     }
 
@@ -294,6 +298,11 @@ class AvlTree
     void printInOrder( AvlNode *t ) const
     {
       cout << "  [!] Printing In Order";
+      if (t != nullptr) {
+	printInOrder(t->left);
+	cout << t->element << " ";
+	printInOrder(t->right);
+      }
     }
 
     /**
@@ -303,6 +312,11 @@ class AvlTree
     void printPreOrder( AvlNode *t ) const
     {
       cout << "  [!] Printing Pre order";
+      if (t != nullptr) {
+	cout << t->element << " ";
+	printPreOrder(t->left);
+	printPreOrder(t->right);
+      }
     }
 
     /**
@@ -312,6 +326,11 @@ class AvlTree
     void printPostOrder( AvlNode *t ) const
     {
       cout << "   [!] Printing post order";
+      if (t != nullptr) {
+	printPostOrder(t->left);
+	printPostOrder(t->right);
+	cout << t->element << " ";
+      }
     }
 
     /**
@@ -351,6 +370,15 @@ class AvlTree
      */
     void rotateWithLeftChild( AvlNode * & k2 )
     {
+      // Perform rotation
+      AvlNode * leftChild = k2->left;
+      k2->left = leftChild->right;
+      leftChild->right = k2;
+      // Update heights; note that there is no need to update leftChild's right child's height (if it exists)
+      k2->height = height(k2);
+      leftChild->height = height(leftChild);
+      // Set new root
+      k2 = leftChild;    // since passing by ref, will update root if rotation occurs there
     }
 
     /**
@@ -360,7 +388,13 @@ class AvlTree
      *  TODO: Implement
      */
     void rotateWithRightChild( AvlNode * & k1 )
-    {
+    {   // same logic as rotateWithLeftChild
+      AvlNode * rightChild = k1->right;   // get right child
+      k1->right = rightChild->left;       // new right of parent  is right's left
+      rightChild->left = k1;              // new left of right is k1
+      k1->height = height(k1);            // update height
+      rightChild->height = height(rightChild);   // update height
+      k1 = rightChild;   // update root
     }
 
     /**
@@ -372,6 +406,8 @@ class AvlTree
      */
     void doubleWithLeftChild( AvlNode * & k3 )
     {
+      rotateWithRightChild(k3->left);
+      rotateWithLeftChild(k3);
     }
 
     /**
@@ -383,6 +419,8 @@ class AvlTree
      */
     void doubleWithRightChild( AvlNode * & k1 )
     {
+      rotateWithLeftChild(k1->right);
+      rotateWithRightChild(k1);
     }
 };
 
