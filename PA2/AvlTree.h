@@ -85,7 +85,7 @@ class AvlTree
      */
     bool isEmpty( ) const
     {
-        return false;  // so not correct
+      return root == nullptr ? true : false; 
     }
 
     /**
@@ -219,7 +219,8 @@ class AvlTree
      */
     int size( AvlNode * & t )
     {
-      return(-1);
+      if (t == nullptr) return 0;  // null node counts zero
+      else return size(t->left) + size(t->right) + 1;  // +1 accounts for current node
     }
 
     /**
@@ -242,7 +243,8 @@ class AvlTree
      */
     AvlNode * findMin( AvlNode *t ) const
     {
-      return t; // placeholder
+      while (t != nullptr) { t = t->left; }     // go all the way left 
+      return t; // t is now the smallest node
     }
 
     /**
@@ -252,7 +254,8 @@ class AvlTree
      */
     AvlNode * findMax( AvlNode *t ) const
     {
-        return t;  // placeholder
+      while (t != nullptr) { t = t->right; }    // go all the way right
+      return t;  // t is now the max node
     }
 
 
@@ -276,7 +279,12 @@ class AvlTree
      */
     void makeEmpty( AvlNode * & t )
     {
-        cout << " [!] makeEmpty not implemented " << endl;
+      if (t != nullptr) {
+	makeEmpty(t->left);
+	makeEmpty(t->right);
+	delete t;    // deleting last ensures t has no children; we are safe to remove
+      }
+      root = nullptr;
     }
 
     /**
@@ -325,7 +333,8 @@ class AvlTree
      */
     int height( AvlNode *t ) const
     {
-			return(-2);  // DEFINITELY not true
+      if (t == nullptr) return -1;
+      else return max(height(t->left) + height(t->right)) + 1;       // take max height of children, add one for the current node
     }
 
 
