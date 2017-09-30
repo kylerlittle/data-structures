@@ -232,7 +232,23 @@ class AvlTree
      */
     void insert( const Comparable & x, AvlNode * & t )
     {
-       // Definitely to do
+      if (t == nullptr) 
+	t = new AvlNode(x, nullptr, nullptr, 0);
+      else if (x < t->element)
+	insert(x, t->left);
+      else if (x > t->element)
+	insert(x, t->right);
+
+      balance(t);
+    }
+
+    /**
+     * Internal method to balance a tree t
+     * If height magnitude of difference between left and right subtrees of t is greater than 1,
+     * then a rotation is necessary.   
+    */
+    void balance(AvlNode * & t) {
+      
     }
 
     /**
