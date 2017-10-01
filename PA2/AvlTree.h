@@ -87,7 +87,7 @@ class AvlTree
      */
     bool isEmpty( ) const
     {
-      return (root == nullptr) ? true : false; 
+      return (root == nullptr);
     }
 
     /**
@@ -123,10 +123,12 @@ class AvlTree
      */
     void printInOrder( ) const
     {
-        if( isEmpty( ) )
+        if( isEmpty( ) ) {
             cout << "Empty tree" << endl;
-        else
+        } else {
+            //cout << "  [!] Printing In Order";
             printInOrder( root );
+        }
     }
 
     /**
@@ -134,10 +136,12 @@ class AvlTree
      */
     void printPreOrder( ) const
     {
-        if( isEmpty( ) )
+        if( isEmpty( ) ) {
             cout << "Empty tree" << endl;
-        else
+        } else {
+            //cout << "   [!] Printing Pre order";
             printPreOrder( root );
+        }
     }
 
     /**
@@ -145,10 +149,12 @@ class AvlTree
      */
     void printPostOrder( ) const
     {
-        if( isEmpty( ) )
+        if( isEmpty( ) ) {
             cout << "Empty tree" << endl;
-        else
+        } else {
+            //cout << "  [!] Printing post order";
             printPostOrder( root );
+        }
     }
 
     /**
@@ -157,6 +163,7 @@ class AvlTree
     void makeEmpty( )
     {
         makeEmpty( root );
+        root = nullptr;     // ensure root is now null
     }
 
     /**
@@ -303,7 +310,7 @@ class AvlTree
      */
     AvlNode * findMin( AvlNode *t ) const
     {
-      while (t != nullptr) { t = t->left; }     // go all the way left 
+      while (t->left != nullptr) { t = t->left; }     // go all the way left 
       return t; // t is now the smallest node
     }
 
@@ -314,7 +321,7 @@ class AvlTree
      */
     AvlNode * findMax( AvlNode *t ) const
     {
-      while (t != nullptr) { t = t->right; }    // go all the way right
+      while (t->right != nullptr) { t = t->right; }    // go all the way right
       return t;  // t is now the max node
     }
 
@@ -350,7 +357,6 @@ class AvlTree
 	makeEmpty(t->right);
 	delete t;    // deleting last ensures t has no children; we are safe to remove
       }
-      root = nullptr;
     }
 
     /**
@@ -359,7 +365,6 @@ class AvlTree
      */
     void printInOrder( AvlNode *t ) const
     {
-      cout << "  [!] Printing In Order";
       if (t != nullptr) {
 	printInOrder(t->left);
 	cout << t->element << " ";
@@ -373,7 +378,6 @@ class AvlTree
      */
     void printPreOrder( AvlNode *t ) const
     {
-      cout << "  [!] Printing Pre order";
       if (t != nullptr) {
 	cout << t->element << " ";
 	printPreOrder(t->left);
@@ -387,7 +391,6 @@ class AvlTree
      */
     void printPostOrder( AvlNode *t ) const
     {
-      cout << "   [!] Printing post order";
       if (t != nullptr) {
 	printPostOrder(t->left);
 	printPostOrder(t->right);
