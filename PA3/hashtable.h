@@ -46,10 +46,12 @@ class Hashtable
 		 */
 		int hash_function(int key) {
 			cout << " Hashing with int type keys." << endl;
+			return 0;
 		}
 
 		int hash_function(string key) {
 			cout << " Hashing with string type keys." << endl;
+			return 0;
 		}
 
 		
@@ -67,6 +69,7 @@ class Hashtable
 		 */
 		bool insert(KEYTYPE key, VALTYPE val) {
 			// Currently unimplemented
+		  return true;
 		}
 
 		/**
@@ -83,6 +86,7 @@ class Hashtable
 		 */
 		int remove(KEYTYPE key) {
 			// Doesn't actually remove anything yet
+		  return 1;
 		}
 
 		/**
