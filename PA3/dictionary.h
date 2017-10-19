@@ -69,6 +69,8 @@ void parseline( string line, vector<string> & parsedLine ) {
 
 /* removeDelimiter */
 // Utility function to remove a delimiter from a given string
+// Makes one pass through the str, but 'erase' has to recopy string each time delimiter found...
+// If I reuse this code, make the big O a lot better
 void removeDelimiter(string & str, char delimiter) {
   std::size_t pos = str.find_first_of(delimiter, 0);
   while (pos != string::npos) {
@@ -123,13 +125,35 @@ class Dictionary
   Hashtable<string, Word> _dict;  // Primary dictionary store
 
   /* help */
-  // ...
+  // Prints out information about the commands which run the user interface
   void help() {
-
+    cout << "*** Command Help ***" << endl;
+    cout << "add [word] [definition]" << endl;
+    cout << "--> adds word and its definition to internal dictionary; if already exists, overwrites" << endl;
+    cout << "remove [word]" << endl;
+    cout << "--> removes word from internal dictionary" << endl;
+    cout << "define [word]" << endl;
+    cout << "--> prints out word's definition if found in internal dictionary" << endl;
+    cout << "load [filename]" << endl;
+    cout << "--> loads JSON file of words/definitions into internal dictionary" << endl;
+    cout << "unload [filename]" << endl;
+    cout << "--> removes all words in JSON file from internal dictionary (if found)" << endl;
+    cout << "size" << endl;
+    cout << "--> prints current number of words in internal dictionary" << endl;
+    cout << "clear" << endl;
+    cout << "--> removes all words from internal dictionary" << endl;
+    cout << "print || print [#words]" << endl;
+    cout << "--> prints all words or user-entered maximum number of words from internal dictionary" << endl;
+    cout << "random" << endl;
+    cout << "--> prints randomly selected word from the internal dictionary" << endl;
+    cout << "quit" << endl;
+    cout << "--> exits program" << endl;
   }
 
   /* add */
-  // ...
+  // removes any enclosing quotation marks from word and definition
+  // converts word to all lower case letters
+  // adds word & corresponding Word objection to internal dictionary
   void add(string & word, string & definition) {
     removeDelimiter(word, '\"');
     removeDelimiter(definition, '\"');
