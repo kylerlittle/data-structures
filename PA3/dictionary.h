@@ -61,6 +61,8 @@ void parseline( string line, vector<string> & parsedLine ) {
       parsedLine.push_back(buffer);
 
     // If there is a third argument, it's the definition of a word we're adding
+    char whitespace;
+    ss >> whitespace;  // since getline grabs the entire rest of the line, we don't want the space after word/filename
     getline(ss, buffer);
     if (!buffer.empty())
       parsedLine.push_back(buffer);
@@ -158,38 +160,51 @@ class Dictionary
     removeDelimiter(word, '\"');
     removeDelimiter(definition, '\"');
     convertToLowerCase(word);
+    cout << "Adding \"" << word << "\" to dictionary." << endl;
+    cout << "Its definition is: \"" << definition << "\"" << endl;
     Word wordObj(word, definition);
     _dict.insert(word, wordObj);    // if word is already in table, insert will handle this
   }
 
   /* remove */
-  // ...
+  // removes any enclosing quotation marks from word & converts to all lower case letters
+  // removes the item from the internal dictionary if it is found; otherwise, nothing is done
   void remove(string & word) {
     removeDelimiter(word, '\"');
     convertToLowerCase(word);
-    // REMOVE
+    int numItemsRemoved = _dict.remove(word);
+    cout << '\"' << word << "\" was ";
+    cout << ((numItemsRemoved == 1) ? "removed successfully." : "not found.") << endl;
   }
 
   /* define */
-  // ...
+  // removes any enclosing quotation marks from word & converts to all lower case letters
+  // finds the word in the internal dictionary & prints its definition; if not found, prints
+  // "unknown word"
   void define(string & word) {
-
+    removeDelimiter(word, '\"');
+    convertToLowerCase(word);
+    Word * valPtr = _dict.find(word);
+    cout << '\"' << word << "\": ";
+    cout << ((valPtr != nullptr) ? valPtr->definition : "unknown word") << endl;
   }
   
   /* load */
-  // ...
+  // opens input JSON file
+  // if successful, parses each JSON line & inserts the word object into the internal
+  // dictionary; else, prints off an error message
   void load(string &filename) {
     std::ifstream input;
+    input.open(filename.c_str());
     if (input) {  // file opened successfully
-      input.open(filename.c_str());
       cout << "Successfully opened JSON file named: " << filename << endl;
       string jsonLine;
       while (getline(input, jsonLine)) {
-	Word word;
-	parseJSONline(jsonLine, word);
-	convertToLowerCase(word.myword);
-	if (!word.myword.empty())  // if word isn't empty, add it to the hash table
-	  _dict.insert(word.myword, word);
+	Word wordObj;
+	parseJSONline(jsonLine, wordObj);
+	convertToLowerCase(wordObj.myword);
+	if (!wordObj.myword.empty())  // if word isn't empty, add it to the hash table
+	  _dict.insert(wordObj.myword, wordObj);
       }
     } else {
       cout << "Failed to open JSON file named " << filename << endl;
@@ -198,27 +213,57 @@ class Dictionary
   }
 
   /* unload */
-  // ...
+  // opens input JSON file
+  // if successful, parses each JSON line & removes the word object from the internal
+  // dictionary if the word is found; if not found or file doesn't open, error message
+  // is printed to STDOUT;
   void unload(string & filename) {
-
+    std::ifstream input;
+    input.open(filename.c_str());
+    if (input) {
+      cout << "Successfully opened JSON file named: " << filename << endl;
+      string jsonLine;
+      while (getline(input, jsonLine)) {
+	Word wordObj;
+	parseJSONline(jsonLine, wordObj);
+	if (!wordObj.myword.empty()) {   // if word isn't empty
+	  this->remove(wordObj.myword);
+	}
+      }
+    } else {
+      cout << "Failed to open JSON file named " << filename << endl;
+    }
+    input.close();
   }
 
   /* size */
-  // ...
+  // prints to STDOUT the number of words currently in the table
   void size() {
-    // Add method to hashtable to keep track of this... (will need for load factor anyways)
+    cout << "Number of words in internal dictionary: " << _dict.size() << endl;
   }
 
   /* clear */
-  // ...
+  // empties out the internal dictionary
   void clear() {
-
+    _dict.clear();
   }
 
   /* print */
   // ...
   void print(string & maxWordNum) {
     // Convert number to an integer using stoi first...
+    if (maxWordNum.empty()) {
+      _dict.print();
+      try {
+	
+      } catch (const std::invalid_argument &e) {
+	cout << '\"' << maxWordNum << "\" cannot be converted to an integer." << endl;
+      } catch (const std::out_of_range &oor) {
+	cout << '\"' << maxWordNum << "\" is too large to be stored by an integer." << endl;
+      }
+    } else {
+
+    }
   }
 
   /* random */

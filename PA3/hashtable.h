@@ -133,6 +133,10 @@ class Hashtable
 			// Does nothing yet
 		}
 
+		void print(int maxNumElementsToPrint = this->size()) {   // by default, assume all elements
+		  
+		}
+
 };
 
 
