@@ -54,7 +54,9 @@ void parseline( string line, vector<string> & parsedLine ) {
 }
   
 // Utility function to remove a delimiter from a given string
-void removeDelimiters(string & str, char delimiter) {
+// I didn't end up using this... but I'll leave it here because
+// it might be useful for the future
+void removeDelimiter(string & str, char delimiter) {
   std::size_t pos = str.find_first_of(delimiter, 0);
   while (pos != string::npos) {
     str.erase(pos, 1);
@@ -71,6 +73,30 @@ void convertToLowerCase(string & word) {
   }
 }
 
+// Utility function to parse a json file line
+// Precondition: Format of each block is "string" : "string", "string" : "string"
+// Could be extended to use for more complex JSON files
+// The function grabs the "word" entry and "definition" entries from the json line &
+// places them into word.myword & word.definition respectively
+void parseJSONline(string & jLine, Word & word) {
+  int counter = 0;
+  while (!jLine.empty()) {  // while we haven't parsed the entire line
+    size_t start, end;
+    start = jLine.find_first_of('\"'); 
+    end = jLine.find_first_of('\"', start + 1);
+    if (start != string::npos && end != string::npos) {
+      if (counter == 1)  // this is the "word" value
+	word.myword = jLine.substr(start + 1, end - start - 1);  // +1 to start str after opening quote; -1 to end before closing quote
+      else if (counter == 3)
+	word.definition = jLine.substr(start + 1, end - start - 1);
+      ++counter;
+      jLine = jLine.substr(end + 1);
+    } else {
+      break;  // No reason to keep parsing
+    }
+  }
+}
+
 
 
 /*
@@ -81,31 +107,38 @@ class Dictionary
  private:
   Hashtable<string, Word> _dict;  // Primary dictionary store
 
+  // help
+  // ...
+  void help() {
+
+  }
+
+  // add
+  // ...
+  void add(string 
+  
+  // load
+  // ...
   void load(string &filename) {
     std::ifstream input;
-    input.exceptions(std::ifstream::failbit | std::ifstream::badbit);  // Allows exception to be thrown if failure occurs when opening
-    try {
+    if (input) {  // file opened successfully
       input.open(filename.c_str());
+      cout << "Successfully opened JSON file named: " << filename << endl;
       string jsonLine;
-      vector<string> lineVec;
       while (getline(input, jsonLine)) {
-	parseline(jsonLine, lineVec);
-	for (auto & token : lineVec) {
-	  for (auto & delimiter : {'{','}', '[', ']', '\"', ','})
-	    removeDelimiters(token, delimiter);
-	  if (token == "word:" || token == "definition:" || token == "dictionary:")
-	    token.clear();
-	  cout << token;
-	}
-	cout << endl;
-	lineVec.clear();
+	Word word;
+	parseJSONline(jsonLine, word);
+	convertToLowerCase(word.myword);
+	if (!word.myword.empty())  // if word isn't empty, add it to the hash table
+	  _dict.insert(word.myword, word);
       }
-      input.close();
-    }
-    catch (std::ios_base::failure & f) {
+    } else {
       cout << "Failed to open JSON file named " << filename << endl;
     }
+    input.close();
   }
+
+  void 
 
  public:
   Dictionary()	// Default constructor
@@ -127,6 +160,7 @@ class Dictionary
     while (getline(cin, instr)) {
       // Variables to be Used
       vector<string> line;
+      bool userWouldLikeToQuit = false;
       parseline(instr, line);
       if (!line.empty()) { // Check if we grabbed an empty line
 	string & command = line.at(0);  // L Value Reference to first token in vector (the command)
@@ -138,32 +172,44 @@ class Dictionary
 	switch (str2int(command.c_str()))
 	  {
 	  case str2int("help"):
+	    this->help();
 	    break;
 	  case str2int("add"):
+	    this->add(line.at(1), line.at(2));  // 2nd and 3rd strings are word & def'n respectively
 	    break;
 	  case str2int("remove"):
+	    this->remove(line.at(1));     // 2nd string is word to remove
 	    break;
 	  case str2int("define"):
+	    this->define(line.at(1));     // 2nd string is word to define
 	    break;
 	  case str2int("load"):
 	    this->load(line.at(1));  // 2nd string is filename
 	    break;
 	  case str2int("unload"):
+	    this->unload(line.at(1));    // 2nd string is filename
 	    break;
 	  case str2int("size"):
+	    this->size();
 	    break;
 	  case str2int("clear"):
+	    this->clear();
 	    break;
 	  case str2int("print"):
+	    this->print(line.at(1));    // 2nd string (if present) is number of words to print
 	    break;
 	  case str2int("random"):
+	    this->random();  
 	    break;
 	  case str2int("quit"):
+	    userWouldLikeToQuit = true;
 	    break;
 	  }
+	if (userWouldLikeToQuit)
+	  break;   // break out of loop
       }   // end if
-    }
-  }
+    }  // end while
+  }  // end run_ui
 
 };
 
