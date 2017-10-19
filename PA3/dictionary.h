@@ -61,11 +61,16 @@ void parseline( string line, vector<string> & parsedLine ) {
       parsedLine.push_back(buffer);
 
     // If there is a third argument, it's the definition of a word we're adding
-    char whitespace;
+    char whitespace = '\0';
     ss >> whitespace;  // since getline grabs the entire rest of the line, we don't want the space after word/filename
-    getline(ss, buffer);
-    if (!buffer.empty())
-      parsedLine.push_back(buffer);
+    if (whitespace != '\0') {
+      getline(ss, buffer);
+      //      if (!buffer.empty())
+      if (whitespace != ' ')
+	parsedLine.push_back(whitespace + buffer);
+      else
+	parsedLine.push_back(buffer);
+    }
   } 
 }
 
@@ -249,28 +254,32 @@ class Dictionary
   }
 
   /* print */
-  // ...
+  // if argument is given (max number of words to print), then it is supplied
+  // to internal dictionary's print method; otherwise, all words printed
   void print(string & maxWordNum) {
-    // Convert number to an integer using stoi first...
-    if (maxWordNum.empty()) {
-      _dict.print();
+    if (maxWordNum.empty()) {  // no arg given, so print all words
+      int numItems = _dict.size();
+      _dict.print(numItems);
+    } else {  // print the number of words given by the user, unless of course it exceeds size()
       try {
-	
-      } catch (const std::invalid_argument &e) {
+	int num = stoi(maxWordNum, nullptr, 10);
+	_dict.print(num);
+      } catch (const std::invalid_argument &ia) {
 	cout << '\"' << maxWordNum << "\" cannot be converted to an integer." << endl;
       } catch (const std::out_of_range &oor) {
 	cout << '\"' << maxWordNum << "\" is too large to be stored by an integer." << endl;
       }
-    } else {
-
     }
   }
 
   /* random */
-  // ...
+  // prints randomly selected word from the internal dictionary
   void random() {
-    // Use random number generator (mod by Tablesize) to generate random index
-    // Continue doing so while there is no word at that index
+    Word * randomWordPtr = _dict.random();
+    if (randomWordPtr != nullptr)
+      cout << "Randomly generated word: " << randomWordPtr->myword << endl;
+    else
+      cout << "No words are currently in the dictionary." << endl;
   }
 
  public:
