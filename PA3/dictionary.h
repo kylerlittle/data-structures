@@ -31,7 +31,7 @@ rather than individual words. This will save time in printing even if it makes i
  * These functions are not a part of the class definition; however, they are used by the class.
 */
 
-// str2int
+/* str2int */
 // SOURCE: https://stackoverflow.com/questions/16388510/evaluate-a-string-with-a-switch-in-c
 // Allows for C++ switch statements using strings
 // Converts string to a constant unsigned int to use in switch statement
@@ -39,23 +39,36 @@ constexpr unsigned int str2int(const char * str, int h = 0) {
     return !str[h] ? 5381 : (str2int(str, h+1) * 33) ^ str[h];
 }
 
-// Parse the line into strings based on the white space delimiter
+/* parseline */
+// Parse the line into 0-3 strings
 // Push_back all tokens into "parsedLine" vector
+// If 'line' is not empty, token #1 is assumed to be a command
+// If a second token is present, it is assumed to be a word or filename
+// If a third token is present, it is assumed to be a word definition
 void parseline( string line, vector<string> & parsedLine ) {
   if (!line.empty()) { // not empty
     string buffer;  // buffer to read token into
     stringstream ss(line);  // insert line into a stream
-    
-    while (ss >> buffer) {  // capitalizes on the fact that '>>' stops at whitespace
-      if (!buffer.empty())  // if token is actually something
-	parsedLine.push_back(buffer);
-    }
+
+    // Grab command (first word)
+    ss >> buffer;
+    if (!buffer.empty())  // if token is actually something
+      parsedLine.push_back(buffer);
+
+    // Grab second argument (either a word or filename)
+    ss >> buffer;
+    if (!buffer.empty())
+      parsedLine.push_back(buffer);
+
+    // If there is a third argument, it's the definition of a word we're adding
+    getline(ss, buffer);
+    if (!buffer.empty())
+      parsedLine.push_back(buffer);
   } 
 }
-  
+
+/* removeDelimiter */
 // Utility function to remove a delimiter from a given string
-// I didn't end up using this... but I'll leave it here because
-// it might be useful for the future
 void removeDelimiter(string & str, char delimiter) {
   std::size_t pos = str.find_first_of(delimiter, 0);
   while (pos != string::npos) {
@@ -64,6 +77,7 @@ void removeDelimiter(string & str, char delimiter) {
   }
 }
 
+/* convertToLowerCase */
 // Utility function to convert a word to all lower case letters
 void convertToLowerCase(string & word) {
   int diff = 'A' - 'a';
@@ -73,6 +87,7 @@ void convertToLowerCase(string & word) {
   }
 }
 
+/* parseJSONline */
 // Utility function to parse a json file line
 // Precondition: Format of each block is "string" : "string", "string" : "string"
 // Could be extended to use for more complex JSON files
@@ -107,17 +122,37 @@ class Dictionary
  private:
   Hashtable<string, Word> _dict;  // Primary dictionary store
 
-  // help
+  /* help */
   // ...
   void help() {
 
   }
 
-  // add
+  /* add */
   // ...
-  void add(string 
+  void add(string & word, string & definition) {
+    removeDelimiter(word, '\"');
+    removeDelimiter(definition, '\"');
+    convertToLowerCase(word);
+    Word wordObj(word, definition);
+    _dict.insert(word, wordObj);    // if word is already in table, insert will handle this
+  }
+
+  /* remove */
+  // ...
+  void remove(string & word) {
+    removeDelimiter(word, '\"');
+    convertToLowerCase(word);
+    // REMOVE
+  }
+
+  /* define */
+  // ...
+  void define(string & word) {
+
+  }
   
-  // load
+  /* load */
   // ...
   void load(string &filename) {
     std::ifstream input;
@@ -138,7 +173,36 @@ class Dictionary
     input.close();
   }
 
-  void 
+  /* unload */
+  // ...
+  void unload(string & filename) {
+
+  }
+
+  /* size */
+  // ...
+  void size() {
+    // Add method to hashtable to keep track of this... (will need for load factor anyways)
+  }
+
+  /* clear */
+  // ...
+  void clear() {
+
+  }
+
+  /* print */
+  // ...
+  void print(string & maxWordNum) {
+    // Convert number to an integer using stoi first...
+  }
+
+  /* random */
+  // ...
+  void random() {
+    // Use random number generator (mod by Tablesize) to generate random index
+    // Continue doing so while there is no word at that index
+  }
 
  public:
   Dictionary()	// Default constructor
