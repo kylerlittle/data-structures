@@ -18,6 +18,7 @@ Need to modify my implementation so that it uses template
 #include <string>
 #include <iostream>
 #include <vector>
+#include <list>
 #include <ctime>     // time()
 #include <cstdlib>   // srand(), rand()
 #include <cmath>     // ceil(), sqrt()
@@ -73,7 +74,7 @@ class Hashtable
  private:
   // Internal Data Members
   int currentNumItems;           // number of filled buckets
-  vector< vector<VALTYPE> > __table;    // internal table
+  vector< list<VALTYPE> > __table;    // internal table
 
 
   // Internal Methods (Private)
@@ -81,17 +82,18 @@ class Hashtable
    *  Rehash the table into a larger table when the load factor is too large
    */
   void rehash() {
-    unsigned int newTableSize = findNextPrime(2 * __table.size());
-    Hashtable newTable(newTableSize);
+    vector<list<VALTYPE>> oldTable = __table;    // make copy of old table
 
+    this->clear();     // clear current table
+    unsigned int newTableSize = findNextPrime(2 * __table.size());
+    __table.resize(newTableSize);   // resize
+    
     // For each item in old hash table, insert in new table
-    for (auto & chain : __table) {
+    for (auto & chain : oldTable) {
       for (auto & item : chain) {
-	newTable.insert(item.myword, item);
+	this->insert(item.myword, item);
       }
     }
-    
-    swap(newTable, *this);   // requires move assignment & constructor are implemented
   }
   
   /**
@@ -127,7 +129,7 @@ class Hashtable
    */
   bool insert(KEYTYPE key, VALTYPE val) {
     // Currently unimplemented
- 
+    
 
     if (this->load_factor() >= 1.0)
       this->rehash();
@@ -139,9 +141,14 @@ class Hashtable
    *  Return whether a given key is present in the hash table
    */
   bool contains(KEYTYPE key) {
+    int hashedKey = hash_function(key);
+    typename list<VALTYPE>::iterator it;
+    for (it = __table.at(hashedKey).begin(); it != __table.at(hashedKey).end(); ++it) {
+      if (key == (*it).myword)
+	return true;
+    }
     return false;
   }
-  
   
   /**
    *  Completely remove key from hash table
@@ -149,12 +156,14 @@ class Hashtable
    */
   int remove(KEYTYPE key) {
     int itemsRemoved = 0;
-    if (this->contains(key)) {
-      int pos = hash_function(key);    // bucket where key hashed to
-      std::vector<VALTYPE>::iterator it;
-      for (it = __table.at(pos).begin(); it->myword != key; ++it);    // location in vector of item to be removed
-      __table.at(pos).erase(it);    // erase the item
-      itemsRemoved = 1;
+    int pos = hash_function(key);    // bucket where key hashed to
+    typename list<VALTYPE>::iterator it;
+    for (it = __table.at(pos).begin(); it != __table.at(pos).end(); ++it) {
+      if (key == (*it).myword) {   // if keys match
+	__table.at(pos).erase(it);    // erase the item
+	itemsRemoved = 1;   // removed 1 item
+	--currentNumItems;    // decrement number of items in table
+      }
     }
     return itemsRemoved;
   }
@@ -164,6 +173,9 @@ class Hashtable
    *   Pointer to Word if found, or nullptr if nothing matches
    */
   VALTYPE *find(KEYTYPE key) {
+    // identical to 'contains' with two changes
+    // where it says return true, say return &(*it)
+    // where it says return false, return nullptr
     return nullptr;
   }
   
@@ -179,9 +191,14 @@ class Hashtable
     while (__table.at(random_index).empty()) {   // Continue generating random index until we find a nonempty bucket
       random_index = rand() % __table.size();
     }
-    int chain_index = rand() % __table.at(random_index).size();  // pick random value in chain
-    
-    return &__table.at(random_index).at(chain_index);   // return address of this value
+    int chain_index = rand() % __table.at(random_index).size(), i = 0;  // pick random value in chain
+    typename list<VALTYPE>::iterator it;
+    for (it = __table.at(random_index).begin(); it != __table.at(random_index).end(); ++it) {
+      if (i == chain_index)      // walk thru list until we get to randomly selected index
+	break;
+      ++i;
+    }
+    return &(*it);   // return address of randomly selected object
   }
 
   /**
