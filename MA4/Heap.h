@@ -44,7 +44,23 @@ private:
 	 */
 	void percolateDown(int index)
 	{
+	  // We'd like to percolate the item at index DOWN until we've restored the heap property
+	  int child;
+	  int tmp = move(_items.at(index));
+	  
+	  for ( ; index * 2 <= _items.size()-1; index = child) {
+	    child = index * 2;
+	    // First half of compound comparison checks if the child is a RIGHT child
+	    // since the only place this might not happen is at the end of the array
+	    if ((child != _items.size() - 1) && (_items.at(child + 1) < _items.at(child)))
+	      ++child;     // We want child to be the index of the smaller child
+	    if (_items.at(child) < _items.at(index))  // if child is smaller than parent, then we need to swap (since min_heap)
+	      swap(_items.at(child), _items.at(index));
+	    else
+	      break;    // Otherwise, we're done!
+	  }
 
+	  _items.at(index) = move(tmp);
 	}
 
 	/**
@@ -54,7 +70,11 @@ private:
 	 */
 	void percolateUp( int current_position )
 	{
-
+	  // While the current_item is less than its parent & we're not at the root
+	  while ((_items.at(current_position) < _items.at(current_position / 2)) && current_position != 1) {
+	    swap(_items.at(current_position), _items.at(current_position / 2));
+	    current_position /= 2;
+	  }
 	}
 
 /************************** Microassigment zone DONE *********************/
