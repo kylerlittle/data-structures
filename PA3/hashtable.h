@@ -1,15 +1,8 @@
 /**
  *  Basic hash table implementation
- *   Aaron S. Crandall - 2017 <acrandal@gmail.com>
- *
+ *  Kyler Little
+ *  Completed at 8:06 PM on 10/20/2017
  */
-
-/*
-LAST UPDATED: 4:04 PM 10/19/17
-Need to modify my implementation so that it uses template
- */
-
-
 
 
 #ifndef __HASH_H
@@ -47,8 +40,8 @@ using namespace std;
  */
 bool isPrime(int n) {
   int sqrtN = ceil(sqrt(n));
-  for (int i = 2; i < sqrtN; ++i) {
-    if (n % i == 0)
+  for (int i = 2; i < sqrtN; ++i) {    // only need to check up to sqrt(n)-- think about it!
+    if (n % i == 0)                    // if i is a factor of n
       return false;
   }
   return true;
@@ -132,6 +125,7 @@ class Hashtable
   bool insert(KEYTYPE key, VALTYPE val) {
     // Check if node already exists in table.
     VALTYPE * ptr = this->find(key);
+    
     if (ptr != nullptr) {  // i.e. item was already in the table
       ptr->definition = val.definition;        // overwrite entry
       cout << '\"' << key << "\"'s definition updated." << endl;

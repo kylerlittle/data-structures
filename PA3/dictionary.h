@@ -232,7 +232,7 @@ class Dictionary
     std::ifstream input;
     input.open(filename.c_str());
     if (input) {
-      cout << "Successfully opened JSON file named: " << filename << endl;
+      //      cout << "Successfully opened JSON file named: " << filename << endl;
       string jsonLine;
       while (getline(input, jsonLine)) {
 	Word wordObj;
