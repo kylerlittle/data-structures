@@ -109,39 +109,39 @@ void heapTests()
 int main(int argc, char* argv[])
 {
 	
-	if( argc > 1 && !strcmp(argv[1], "--test" ) )
-	{
+//	if( argc > 1 && !strcmp(argv[1], "--test" ) )
+//	{
 		cout << " [x] Running in test mode. " << endl;
 		heapTests();
 		cout << " [x] Program complete. " << endl;
-	}
-	else
-	{
-		cout << " [x] Running in normal mode. " << endl;
-		cout << "  [!] Nothing to do in normal mode, so here's a helper: " << endl << endl;
-
-cout << ""
-""
-"                                  ___.___               \n"
-"                                    (_]===*             \n"
-"                                    o 0                 \n"
-"                                                        \n"
-"                 _,-}}-._                               \n"
-"                /\\   }  /\\                            \n"
-"              _|(0\\\\_ _/0)                  ___|_     \n"
-"             _|/  (__''__)                 |#####|      \n"
-"           _|\\/    WVVVVW                  |#####|     \n"
-"          \\ _\\     \\MMMM/_             .-----.###|   \n"
-"        _|\\_\\     _ '---; \\_           |#####|###|   \n"
-"   /\\   \\ _\\/      \\_   /   \\          |#C++#|###| \n"
-"  / (    _\\/     \\   \\  |'VVV     P    |#####|###|   \n"
-" (  '-,._\\_.(      'VVV /      (_/|\\_) |#####|###|    \n"
-"  \\         /   _) /   _)     (_/_ _\\_)|#####|###|    \n" 
-"   '....--''\\__vvv)\\__vvv)_____|_| |_|_|#####|###|____ldb\n";
-
-
-
-		cout << endl << " You should probably run 'make test' to test your program. " << endl;
-	}
+//	}
+//	else
+//	{
+//		cout << " [x] Running in normal mode. " << endl;
+//		cout << "  [!] Nothing to do in normal mode, so here's a helper: " << endl << endl;
+//
+//cout << ""
+//""
+//"                                  ___.___               \n"
+//"                                    (_]===*             \n"
+//"                                    o 0                 \n"
+//"                                                        \n"
+//"                 _,-}}-._                               \n"
+//"                /\\   }  /\\                            \n"
+//"              _|(0\\\\_ _/0)                  ___|_     \n"
+//"             _|/  (__''__)                 |#####|      \n"
+//"           _|\\/    WVVVVW                  |#####|     \n"
+//"          \\ _\\     \\MMMM/_             .-----.###|   \n"
+//"        _|\\_\\     _ '---; \\_           |#####|###|   \n"
+//"   /\\   \\ _\\/      \\_   /   \\          |#C++#|###| \n"
+//"  / (    _\\/     \\   \\  |'VVV     P    |#####|###|   \n"
+//" (  '-,._\\_.(      'VVV /      (_/|\\_) |#####|###|    \n"
+//"  \\         /   _) /   _)     (_/_ _\\_)|#####|###|    \n" 
+//"   '....--''\\__vvv)\\__vvv)_____|_| |_|_|#####|###|____ldb\n";
+//
+//
+//
+//		cout << endl << " You should probably run 'make test' to test your program. " << endl;
+//	}
 	
 }

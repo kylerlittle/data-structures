@@ -46,10 +46,10 @@ private:
 	{
 	  // We'd like to percolate the item at index DOWN until we've restored the heap property
 	  int child;
-	  int tmp = move(_items.at(index));
+	  int tmp = move(_items.at(index));          // make hole at index!
 	  
-	  for ( ; index * 2 <= _items.size()-1; index = child) {
-	    child = index * 2;
+	  for ( ; ((index * 2) + 1) <= _items.size(); index = child) {
+	    child = (index * 2) + 1;
 	    // First half of compound comparison checks if the child is a RIGHT child
 	    // since the only place this might not happen is at the end of the array
 	    if ((child != _items.size() - 1) && (_items.at(child + 1) < _items.at(child)))
@@ -71,10 +71,12 @@ private:
 	void percolateUp( int current_position )
 	{
 	  // While the current_item is less than its parent & we're not at the root
-	  while ((_items.at(current_position) < _items.at(current_position / 2)) && current_position != 1) {
-	    swap(_items.at(current_position), _items.at(current_position / 2));
-	    current_position /= 2;
+	  int tmp = move(_items.at(current_position));	// Create a hole at current_position, so there are no swaps (only moves!)
+	  while ((tmp < _items.at((current_position - 1) / 2)) && current_position > 0) {
+	    _items.at(current_position) = move(_items.at((current_position - 1) / 2));
+	    current_position = (current_position - 1) / 2;   // -1 so we get the correct parent... thanks Crandall
 	  }
+	  _items.at(current_position) = tmp;
 	}
 
 /************************** Microassigment zone DONE *********************/
@@ -83,7 +85,7 @@ public:
 	/**
 	 *  Default empty constructor
 	 */
-	Heap()
+	Heap() 
 	{
 	}
 
