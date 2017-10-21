@@ -61,7 +61,7 @@ unsigned int findNextPrime(int n) {
   int nextPrime = 0;
   nextPrime = ((n % 2 == 0) ? (n + 1) : (n + 2) );   // set nextPrime equal to next odd number after n
   while (isPrime(nextPrime) == false)
-    n += 2;     // we can skip all even numbers obviously
+    nextPrime += 2;     // we can skip all even numbers obviously
   return nextPrime;
 }
 
@@ -101,7 +101,7 @@ class Hashtable
    *   This function needs to be implemented for several types it could be used with!
    */
   unsigned int hash_function(int key) {
-    cout << " Hashing with int type keys." << endl;
+    //    cout << " Hashing with int type keys." << endl;
     return key % __table.size();
   }
 
@@ -109,7 +109,7 @@ class Hashtable
   // Data Structures & Algorithm Analysis in C++, Fourth Edition, Mark Allen Weiss
   // p. 195, figure 5.4
   unsigned int hash_function(string key) {
-    cout << " Hashing with string type keys." << endl;
+    //    cout << " Hashing with string type keys." << endl;
     unsigned int hashVal = 0;
 
     for (char ch : key)
@@ -128,9 +128,19 @@ class Hashtable
    *  Add an element to the hash table
    */
   bool insert(KEYTYPE key, VALTYPE val) {
-    // Currently unimplemented
-    
+    // Check if node already exists in table.
+    VALTYPE * ptr = this->find(key);
+    if (ptr != nullptr) {  // i.e. item was already in the table
+      ptr->definition = val.definition;        // overwrite entry
+      return false;
+    }
 
+    // Since item wasn't found, insert it into the table!
+    int hashedKey = hash_function(key);
+    __table.at(hashedKey).push_back(val);
+    ++currentNumItems;
+
+    // Now check if we need to rehash
     if (this->load_factor() >= 1.0)
       this->rehash();
 
@@ -142,7 +152,7 @@ class Hashtable
    */
   bool contains(KEYTYPE key) {
     int hashedKey = hash_function(key);
-    typename list<VALTYPE>::iterator it;
+    typename list<VALTYPE>::const_iterator it;
     for (it = __table.at(hashedKey).begin(); it != __table.at(hashedKey).end(); ++it) {
       if (key == (*it).myword)
 	return true;
@@ -157,12 +167,13 @@ class Hashtable
   int remove(KEYTYPE key) {
     int itemsRemoved = 0;
     int pos = hash_function(key);    // bucket where key hashed to
-    typename list<VALTYPE>::iterator it;
+    typename list<VALTYPE>::const_iterator it;
     for (it = __table.at(pos).begin(); it != __table.at(pos).end(); ++it) {
       if (key == (*it).myword) {   // if keys match
 	__table.at(pos).erase(it);    // erase the item
 	itemsRemoved = 1;   // removed 1 item
 	--currentNumItems;    // decrement number of items in table
+	break;
       }
     }
     return itemsRemoved;
@@ -173,10 +184,15 @@ class Hashtable
    *   Pointer to Word if found, or nullptr if nothing matches
    */
   VALTYPE *find(KEYTYPE key) {
-    // identical to 'contains' with two changes
-    // where it says return true, say return &(*it)
-    // where it says return false, return nullptr
-    return nullptr;
+    // Essentially identical code to 'contains' (only differs in return type)
+    // If I was writing in a different language, I could merge the two functions into one...
+    int hashedKey = hash_function(key);
+    typename list<VALTYPE>::iterator it;
+    for (it = __table.at(hashedKey).begin(); it != __table.at(hashedKey).end(); ++it) {
+      if (key == (*it).myword)
+	return &(*it);      // address of the found object
+    }
+    return nullptr;   // not found
   }
   
   /**
@@ -235,6 +251,7 @@ class Hashtable
   void clear() {
     for (auto & chain : __table)
       chain.clear();
+    currentNumItems = 0;
   }
   
   void print(int maxNumElementsToPrint) {   // by default, assume all elements

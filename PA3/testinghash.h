@@ -67,12 +67,12 @@ void test_hash_remove() {
 	cout << "  [t] Testing remove()" << endl;;
 	Hashtable<string, Word> ht;
 
-	ht.insert( "wordA", Word("WordA", "It's a word!") );
+	ht.insert( "wordA", Word("wordA", "It's a word!") );
 	cout << "   [t] Contains wordA (yes)";
 	( ht.contains( "wordA" ) ) ? cout << " - pass" : cout << " - fail";
 	cout << endl;
 
-	cout << "   [t] Removing WordA: " << endl;
+	cout << "   [t] Removing wordA: " << endl;
 	int count = ht.remove( "wordA" );
 	cout << "        Count (1): " << count;
 	( count == 1 ) ? cout << " - pass" : cout << " - fail";   cout << endl;

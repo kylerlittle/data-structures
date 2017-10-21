@@ -165,8 +165,8 @@ class Dictionary
     removeDelimiter(word, '\"');
     removeDelimiter(definition, '\"');
     convertToLowerCase(word);
-    cout << "Adding \"" << word << "\" to dictionary." << endl;
-    cout << "Its definition is: \"" << definition << "\"" << endl;
+    //    cout << "Adding \"" << word << "\" to dictionary." << endl;
+    //    cout << "Its definition is: \"" << definition << "\"" << endl;
     Word wordObj(word, definition);
     _dict.insert(word, wordObj);    // if word is already in table, insert will handle this
   }
@@ -296,7 +296,7 @@ class Dictionary
     cout << "+------------------------------------------+" << endl;
     
     string instr;
-    cout << " Enter command (^D or EOF quits): ";
+    cout << " Enter command (^D or EOF quits): " << endl;
     
     // read in user input until eof
     while (getline(cin, instr)) {
