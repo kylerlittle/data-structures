@@ -8,5 +8,6 @@ random
 random
 random
 load config/dictLoad2.json
+print 10
 random
 random

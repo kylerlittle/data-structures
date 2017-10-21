@@ -54,18 +54,19 @@ void parseline( string line, vector<string> & parsedLine ) {
     ss >> buffer;
     if (!buffer.empty())  // if token is actually something
       parsedLine.push_back(buffer);
-
+    buffer.clear();
+    
     // Grab second argument (either a word or filename)
     ss >> buffer;
     if (!buffer.empty())
       parsedLine.push_back(buffer);
-
+    buffer.clear();
+    
     // If there is a third argument, it's the definition of a word we're adding
     char whitespace = '\0';
     ss >> whitespace;  // since getline grabs the entire rest of the line, we don't want the space after word/filename
     if (whitespace != '\0') {
       getline(ss, buffer);
-      //      if (!buffer.empty())
       if (whitespace != ' ')
 	parsedLine.push_back(whitespace + buffer);
       else
@@ -168,7 +169,12 @@ class Dictionary
     //    cout << "Adding \"" << word << "\" to dictionary." << endl;
     //    cout << "Its definition is: \"" << definition << "\"" << endl;
     Word wordObj(word, definition);
-    _dict.insert(word, wordObj);    // if word is already in table, insert will handle this
+    bool newWord = _dict.insert(word, wordObj);
+    if (newWord)     // if word is already in table, insert will handle this
+      cout << '\"' << word << "\" inserted successfully into dictionary as new word." << endl;
+    else
+      cout << '\"' << word << "\"'s definition updated to: " << definition << endl;
+	  
   }
 
   /* remove */
@@ -202,7 +208,7 @@ class Dictionary
     std::ifstream input;
     input.open(filename.c_str());
     if (input) {  // file opened successfully
-      cout << "Successfully opened JSON file named: " << filename << endl;
+      //      cout << "Successfully opened JSON file named: " << filename << endl;
       string jsonLine;
       while (getline(input, jsonLine)) {
 	Word wordObj;
@@ -257,7 +263,7 @@ class Dictionary
   // if argument is given (max number of words to print), then it is supplied
   // to internal dictionary's print method; otherwise, all words printed
   void print(string & maxWordNum) {
-    if (maxWordNum.empty()) {  // no arg given, so print all words
+    if (maxWordNum == "print") {  // no arg given, so print all words
       int numItems = _dict.size();
       _dict.print(numItems);
     } else {  // print the number of words given by the user, unless of course it exceeds size()
@@ -338,7 +344,7 @@ class Dictionary
 	    this->clear();
 	    break;
 	  case str2int("print"):
-	    this->print(line.at(1));    // 2nd string (if present) is number of words to print
+	    this->print(line.back());    // 2nd string (if present) is number of words to print
 	    break;
 	  case str2int("random"):
 	    this->random();  

@@ -122,7 +122,9 @@ class Hashtable
   /**
    *  Basic constructor
    */
- Hashtable( int startingSize = 101 ) : currentNumItems(0), __table(startingSize) { }
+ Hashtable( int startingSize = 101 ) : currentNumItems(0), __table(startingSize) {
+    srand((unsigned)time(0));   // Seed Value-- important to only do once
+  }
   
   /**
    *  Add an element to the hash table
@@ -132,6 +134,7 @@ class Hashtable
     VALTYPE * ptr = this->find(key);
     if (ptr != nullptr) {  // i.e. item was already in the table
       ptr->definition = val.definition;        // overwrite entry
+      cout << '\"' << key << "\"'s definition updated." << endl;
       return false;
     }
 
@@ -144,6 +147,7 @@ class Hashtable
     if (this->load_factor() >= 1.0)
       this->rehash();
 
+    //    cout << '\"' << key << "\" added to dictionary successfully." << endl;
     return true;
   }
   
@@ -202,7 +206,6 @@ class Hashtable
   VALTYPE * random() {
     if (this->size() == 0) return nullptr;
     
-    srand((unsigned)time(0));   // Seed Value
     int random_index = rand() % __table.size();
     while (__table.at(random_index).empty()) {   // Continue generating random index until we find a nonempty bucket
       random_index = rand() % __table.size();
@@ -261,6 +264,15 @@ class Hashtable
       cout << "all entries will be printed instead." << endl;
     }
     // Print all entries
+    int entriesPrinted = 0;
+    for (auto & chain : __table) {
+      for (auto & item : chain) {
+	if (entriesPrinted < maxNumElementsToPrint) {
+	  cout << '\"' << item.myword << "\": " << item.definition << endl;
+	  ++entriesPrinted;
+	}
+      }
+    }
   }
 
 };
