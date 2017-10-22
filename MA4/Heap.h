@@ -46,21 +46,32 @@ private:
 	{
 	  // We'd like to percolate the item at index DOWN until we've restored the heap property
 	  int child;
-	  int tmp = move(_items.at(index));          // make hole at index!
-	  
-	  for ( ; ((index * 2) + 1) <= _items.size(); index = child) {
-	    child = (index * 2) + 1;
-	    // First half of compound comparison checks if the child is a RIGHT child
-	    // since the only place this might not happen is at the end of the array
-	    if ((child != _items.size() - 1) && (_items.at(child + 1) < _items.at(child)))
-	      ++child;     // We want child to be the index of the smaller child
-	    if (_items.at(child) < _items.at(index))  // if child is smaller than parent, then we need to swap (since min_heap)
-	      swap(_items.at(child), _items.at(index));
-	    else
-	      break;    // Otherwise, we're done!
-	  }
-
-	  _items.at(index) = move(tmp);
+          
+          if (!_items.empty()) {
+              T tmp = move(_items.at(index));          // make hole at index!
+              for ( ; ((index * 2) + 2) < size(); index = child) {
+                child = (index * 2) + 1;       // index of left child
+                // First comparison checks if the child is the last
+                // item in the array (meaning that there isn't a right child)
+                if ((child != size())) {
+                    if (_items.at(child + 1) < _items.at(child))
+                        ++child;     // We want child to be the index of the smaller child
+                }
+                // if child is smaller than tmp, then we need to move child to the hole (since min_heap)
+                if (_items.at(child) < tmp) {
+                  _items.at(index) = move(_items.at(child));
+                }
+                else {
+                  break;    // Otherwise, we're done!
+                }
+              }
+              _items.at(index) = move(tmp);
+          }
+          
+          // need this because once the size is 2, won't enter my for loop (and won't swap last 2 elements if out of order)
+          if (size() == 2 && _items.at(0) > _items.at(1))
+              swap(_items.at(0), _items.at(1));
+              
 	}
 
 	/**
