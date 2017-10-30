@@ -29,7 +29,7 @@ void instrumentedBubbleSort( vector<int> & a, SortStats & stats )
 				a[i] += a[i+1];
 				a[i+1] = a[i] - a[i+1];
 				a[i] -= a[i+1];
-         	swapp = true;
+				swapp = true;
 			}
 		}
 	}
