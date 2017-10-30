@@ -17,16 +17,29 @@
 
 using namespace std;
 
+void merge(vector<int> & a, vector<int> tmp, int leftPos, int rightPos, int rightEnd) {
+
+
+}
+
+void mergeSort(vector<int> & a, vector<int> & tmp, int left, int right) {
+  if (left < right) {
+    int center = (left + right) / 2;     // find splitting point of a
+    mergeSort(a, tmp, left, center);     // sort left half
+    mergeSort(a, tmp, center + 1, right);        // sort right half
+    merge(a, tmp, left, center + 1, right);
+  }
+}
+
 void instrumentedMergeSort( vector<int> & a, SortStats & stats )
 {
     clock_t time_begin = clock();       // Grab presort time
 
-
-	// MA TODO: Implement Merge Sort plus logging compares and moves/swaps
-
+    // MA TODO: Implement Merge Sort plus logging compares and moves/swaps
+    
 
     clock_t time_end = clock();         // Grab time when sort complete
-	stats.sortTime = double(time_end - time_begin) / CLOCKS_PER_SEC;
+    stats.sortTime = double(time_end - time_begin) / CLOCKS_PER_SEC;
 }
 
 
