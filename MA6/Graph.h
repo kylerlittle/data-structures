@@ -199,6 +199,32 @@ public:
 		priority_queue<Vertex*, vector<Vertex*>, PathWeightComparer> dijkstra_queue{};
 
 		// End of hints - Dijkstra's Algorithm Goes here:
+		// Start of algo! Set path weight to 0.0, that it's known, & enqueue it :-)
+		_vertices.at(startingID)->set_known();
+		_vertices.at(startingID)->setPathWeight(0.0);
+		dijkstra_queue.push(_vertices.at(startingID)); //vertex with starting ID)
+		
+		while (!dijkstra_queue.empty()) {
+		  Vertex *curr = dijkstra_queue.top();
+		  dijkstra_queue.pop();
+
+		  for (auto vrtx : curr->getEdges()) {     // each vrtx is an std::pair
+		    // vrtx.first yields 'Vertex *' for edge while vrtx.second yields 'double' (i.e. the edge's weight)
+		    if (!vrtx.first->is_known()) {  // if not known, then process it
+
+		      double maybeNewShortestPath = curr->getPathWeight() + (double)curr->getEdgeWeight(vrtx.first);
+		      //cout << "path to new vertex len: " << maybeNewShortestPath << endl;
+		      if (maybeNewShortestPath < vrtx.first->getPathWeight()) {
+			//cout << "vrtx.first->pathweight: " << vrtx.first->getPathWeight() << "\tvrtx.second: " << vrtx.second << endl;
+			//vrtx.first->set_known();     // doing stuff with it, so it's "known"
+			vrtx.first->setPathWeight(maybeNewShortestPath);
+			//vrtx.second = maybeNewShortestPath;
+			vrtx.first->set_path(curr);
+			dijkstra_queue.push(vrtx.first);    // push onto priority queue
+		      }
+		    }
+		  }
+		}
 
 	}
 	// DONE WITH MA
